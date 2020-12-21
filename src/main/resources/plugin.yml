@@ -1,0 +1,7 @@
+name: MysticLanguageAPI
+version: 0.1
+main: de.fynn.mystic.mysticlanguageapi.MysticLanguageAPI
+api-version: 1.16
+prefix: MysticLanguageAPI
+load: STARTUP
+authors: [ Fynn ]
