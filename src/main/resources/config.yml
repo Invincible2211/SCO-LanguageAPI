@@ -1,0 +1,23 @@
+messages:
+  onlyPlayers:
+    de:
+      'Du musst ein Spieler sein um diesen Befehl auszuführen'
+    en:
+      'You must be a player to perform this command'
+  commandNotFound:
+    de:
+      'Der Befehl wurde nicht gefunden'
+      en:
+        'The command was not found'
+  languageNotFound:
+    de:
+      'Die gewünschte Sprache ist nicht verfügbar oder falsch geschrieben'
+      en:
+        'The requested language is not available or is misspelled'
+  languageSwitch:
+    de:
+      'Deine Sprache wurde geändert'
+      en:
+        'Your language has been changed'
+defaultLanguage:
+  'de_DE'
