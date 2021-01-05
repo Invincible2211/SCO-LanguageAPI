@@ -1,3 +1,14 @@
+database:
+  schema:
+    ''
+  ip:
+    ''
+  port:
+    ''
+  user:
+    ''
+  password:
+    ''
 messages:
   onlyPlayers:
     de:

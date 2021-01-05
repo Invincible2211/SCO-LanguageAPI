@@ -31,4 +31,14 @@ public class CFGLoader {
         return cfg.getString("defaultLanguage");
     }
 
+    public static String[] getDBData(){
+        return new String[]{
+                cfg.getString("database.schema"),
+                cfg.getString("database.ip"),
+                cfg.getString("database.port"),
+                cfg.getString("database.user"),
+                cfg.getString("database.password")
+        };
+    }
+
 }
