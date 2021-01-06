@@ -24,7 +24,7 @@ public class DBConnector {
     }
 
     private void connect() throws SQLException{
-        connection = DriverManager.getConnection("jdbc:mysql://"+db[1]+":"+db[2],db[3],db[4]);
+        connection = DriverManager.getConnection("jdbc:mysql://"+db[1]+":"+db[2]+"?useSSL=false",db[3],db[4]);
         statement = connection.createStatement();
     }
 
