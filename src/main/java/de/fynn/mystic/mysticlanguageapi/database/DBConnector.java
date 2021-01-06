@@ -3,6 +3,9 @@ package de.fynn.mystic.mysticlanguageapi.database;
 import de.fynn.mystic.mysticlanguageapi.file.CFGLoader;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class DBConnector {
 
@@ -14,6 +17,7 @@ public class DBConnector {
         try {
             connect();
             statement.execute("CREATE SCHEMA IF NOT EXISTS "+db[0]+";");
+            statement.execute("CREATE TABLE IF NOT EXISTS "+db[0]+".language (uuid VARCHAR(150) NOT NULL, language VARCHAR(150) NOT NULL ,PRIMARY KEY (uuid));");
         } catch (SQLException exception) {
             exception.printStackTrace();
         }
@@ -35,29 +39,48 @@ public class DBConnector {
         }
     }
 
-    public void executeSQL(String sql){
+    public void insertPlayer(UUID uuid, String language){
+        validateConnection();
         try {
-            statement.execute(sql);
+            statement.execute("INSERT INTO "+db[0]+".language (uuid,language) VALUES ('"+uuid.toString()+"','"+language+"');");
         } catch (SQLException exception) {
             exception.printStackTrace();
         }
     }
 
-    public ResultSet executeQuerry(String sql){
+    public void updatePlayer(UUID uuid, String newLangauge){
+        validateConnection();
         try {
-            return statement.executeQuery(sql);
+            statement.executeUpdate("UPDATE "+db[0]+".language SET language = "+newLangauge+" WHERE uuid = ''"+uuid.toString()+"';'");
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    public String loadPlayer(UUID uuid){
+        validateConnection();
+        try {
+            ResultSet result = statement.executeQuery("SELECT language FROM "+db[0]+".language WHERE uuid = '"+uuid.toString()+"';'");
+            result.next();
+            return result.getString(1);
         } catch (SQLException exception) {
             exception.printStackTrace();
         }
         return null;
     }
 
-    public void update(String sql){
+    public List<UUID> getRegisteredPlayers(){
+        List<UUID> players = new ArrayList<>();
         try {
-            statement.executeUpdate(sql);
-        } catch (SQLException exception) {
+            validateConnection();
+            ResultSet result = statement.executeQuery("SELECT uuid FROM "+db[0]+".language");
+            while (result.next()){
+                players.add(UUID.fromString(result.getString(1)));
+            }
+        }catch (SQLException exception) {
             exception.printStackTrace();
         }
+        return players;
     }
 
 }

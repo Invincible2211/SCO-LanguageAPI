@@ -1,5 +1,6 @@
 package de.fynn.mystic.mysticlanguageapi.language;
 
+import de.fynn.mystic.mysticlanguageapi.database.DBConnector;
 import de.fynn.mystic.mysticlanguageapi.file.CFGLoader;
 import org.bukkit.plugin.Plugin;
 
@@ -10,6 +11,7 @@ import java.util.UUID;
 
 public class LanguageManager {
 
+    private static final DBConnector connector;
     private static final HashMap<Plugin,HashMap<String,Language>> languages = new HashMap<>();
     private static final HashMap<Plugin,String> defaultLanguageFromPlugin = new HashMap<>();
     private static final List<String> availableLang = new ArrayList<>();
@@ -20,6 +22,12 @@ public class LanguageManager {
 
     static {
         defaultLang = CFGLoader.getDefaultLang();
+        connector = new DBConnector();
+        List<UUID> players = connector.getRegisteredPlayers();
+        for (UUID uuid:
+             players) {
+            playerLang.put(uuid, connector.loadPlayer(uuid));
+        }
     }
 
     public LanguageManager(Plugin parent, String defaultLanguage, Language defaultLang){
@@ -66,10 +74,12 @@ public class LanguageManager {
     public static void registerPlayer(UUID uuid){
         if(playerLang.containsKey(uuid))return;
         playerLang.put(uuid,defaultLang);
+        connector.insertPlayer(uuid,defaultLang);
     }
 
     public void setLanguage(UUID uuid, String language){
         playerLang.replace(uuid, language);
+        connector.updatePlayer(uuid, language);
     }
 
     public boolean containsLanguage(String language){
