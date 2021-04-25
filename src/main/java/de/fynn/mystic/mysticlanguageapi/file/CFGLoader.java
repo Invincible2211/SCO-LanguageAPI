@@ -9,6 +9,11 @@ public class CFGLoader {
 
     private final static FileConfiguration cfg = MysticLanguageAPI.getInstance().getConfig();
 
+    static {
+        cfg.options().copyDefaults(true);
+        MysticLanguageAPI.getInstance().saveConfig();
+    }
+
     public static HashMap<Integer,String> getDE(){
         HashMap<Integer,String> messages = new HashMap<>();
         messages.put(0,cfg.getString("messages.onlyPlayers.de"));
