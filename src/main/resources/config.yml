@@ -18,17 +18,17 @@ messages:
   commandNotFound:
     de:
       'Der Befehl wurde nicht gefunden'
-      en:
+    en:
         'The command was not found'
   languageNotFound:
     de:
       'Die gewünschte Sprache ist nicht verfügbar oder falsch geschrieben'
-      en:
+    en:
         'The requested language is not available or is misspelled'
   languageSwitch:
     de:
       'Deine Sprache wurde geändert'
-      en:
+    en:
         'Your language has been changed'
 defaultLanguage:
   'de_DE'
