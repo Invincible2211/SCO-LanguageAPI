@@ -4,14 +4,18 @@ import java.util.HashMap;
 
 public class Language {
 
-    private final HashMap<Integer,String> messages;
+    private final HashMap<String,String> messages;
 
-    public Language(HashMap<Integer,String> messages){
+    public Language(HashMap<String,String> messages){
         this.messages = messages;
     }
 
-    public String getValue(int key){
-        return messages.get(key);
+    public void addValue(String path, String value){
+        messages.put(path, value);
+    }
+
+    public String getValue(String path){
+        return messages.get(path);
     }
 
 }

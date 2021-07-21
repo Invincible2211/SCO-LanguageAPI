@@ -4,6 +4,7 @@ import de.fynn.mystic.mysticlanguageapi.database.DBConnector;
 import de.fynn.mystic.mysticlanguageapi.file.CFGLoader;
 import org.bukkit.plugin.Plugin;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,16 +31,17 @@ public class LanguageManager {
         }
     }
 
-    public LanguageManager(Plugin parent, String defaultLanguage, Language defaultLang){
+    public LanguageManager(Plugin parent, String defaultLanguage, File defaultLang){
         this.parent = parent;
         pluginDefaultLang = defaultLanguage;
         defaultLanguageFromPlugin.put(parent,defaultLanguage);
         languages.put(parent,new HashMap<>());
-        languages.get(parent).put(defaultLanguage,defaultLang);
+        languages.get(parent).put(defaultLanguage, LanguageFileLoader.loadLanguageFromFile(defaultLang));
+        loadParentLanguages();
     }
 
-    public void registerLanguage(String name, Language language){
-        languages.get(parent).put(name,language);
+    public void registerLanguage(String name, File language){
+        languages.get(parent).put(name,LanguageFileLoader.loadLanguageFromFile(language));
         if (!availableLang.contains(name))availableLang.add(name);
     }
 
@@ -47,23 +49,23 @@ public class LanguageManager {
         return availableLang;
     }
 
-    public String getMessage(UUID uuid, int value){
+    public String getMessage(UUID uuid, String path){
         String language = playerLang.get(uuid);
         if(language == null)language = defaultLang;
         if(languages.get(parent).containsKey(language)){
-            return languages.get(parent).get(language).getValue(value);
+            return languages.get(parent).get(language).getValue(path);
         }else {
-            return languages.get(parent).get(pluginDefaultLang).getValue(value);
+            return languages.get(parent).get(pluginDefaultLang).getValue(path);
         }
     }
 
-    public String getMessage(Plugin plugin,UUID uuid, int value){
+    public String getMessage(Plugin plugin,UUID uuid, String path){
         String language = playerLang.get(uuid);
         if(language == null)language = defaultLang;
         if(languages.get(plugin).containsKey(language)){
-            return languages.get(plugin).get(language).getValue(value);
+            return languages.get(plugin).get(language).getValue(path);
         }else {
-            return languages.get(plugin).get(defaultLanguageFromPlugin.get(plugin)).getValue(value);
+            return languages.get(plugin).get(defaultLanguageFromPlugin.get(plugin)).getValue(path);
         }
     }
 
@@ -84,6 +86,17 @@ public class LanguageManager {
 
     public boolean containsLanguage(String language){
         return availableLang.contains(language);
+    }
+
+    private void loadParentLanguages(){
+        File langFolder = new File(parent.getDataFolder()+"/lang");
+        File[] langFiles = langFolder.listFiles();
+        for (File langFile:
+             langFiles) {
+            if(langFile.getName().replaceFirst(".yml","")!=pluginDefaultLang){
+                registerLanguage(langFile.getName().replaceFirst(".yml",""), langFile);
+            }
+        }
     }
 
 }
