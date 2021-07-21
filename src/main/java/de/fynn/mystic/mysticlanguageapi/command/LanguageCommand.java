@@ -9,12 +9,15 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.io.File;
+import java.io.InputStreamReader;
+
 public class LanguageCommand implements CommandExecutor {
 
     private LanguageManager languageManager;
 
     {
-
+        languageManager = new LanguageManager(MysticLanguageAPI.getInstance(),CFGLoader.getDefaultLang(),new File(MysticLanguageAPI.getInstance().getDataFolder()+"/language/defaultMessages.yml"));
     }
 
     @Override
@@ -24,30 +27,18 @@ public class LanguageCommand implements CommandExecutor {
             if(args.length==1){
                 if(languageManager.containsLanguage(args[0])){
                     languageManager.setLanguage(p.getUniqueId(),args[0]);
-                    p.sendMessage(languageManager.getMessage(p.getUniqueId(),3));
+                    p.sendMessage(languageManager.getMessage(p.getUniqueId(),"COMMAND.CHANGE_LANGUAGE"));
                 }else {
-                    p.sendMessage(languageManager.getMessage(p.getUniqueId(),2));
+                    p.sendMessage(languageManager.getMessage(p.getUniqueId(),"COMMAND.LANGUAGE_NOT_FOUND"));
                 }
             }else {
-                p.sendMessage(languageManager.getMessage(p.getUniqueId(),1));
+                p.sendMessage(languageManager.getMessage(p.getUniqueId(),"COMMAND.COMMAND_NOT_FOUND"));
                 return false;
             }
         }else {
-            sender.sendMessage(languageManager.getMessage(null,0));
+            sender.sendMessage(languageManager.getMessage(null,"COMMAND.ONLY_FOR_PLAYERS"));
         }
         return true;
-    }
-
-    private void registerAPILang(){
-        Language de_DE = new Language(CFGLoader.getDE());
-        Language en_EN = new Language(CFGLoader.getENG());
-        if(CFGLoader.getDefaultLang().equals("de_DE")){
-            languageManager = new LanguageManager(MysticLanguageAPI.getInstance(),"de_DE",de_DE);
-            languageManager.registerLanguage("en_EN",en_EN);
-        }else {
-            languageManager = new LanguageManager(MysticLanguageAPI.getInstance(),"en_EN",en_EN);
-            languageManager.registerLanguage("de_DE",de_DE);
-        }
     }
 
 }
