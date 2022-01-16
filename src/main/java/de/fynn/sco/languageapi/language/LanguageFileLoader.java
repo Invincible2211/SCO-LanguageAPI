@@ -1,4 +1,4 @@
-package de.fynn.mystic.mysticlanguageapi.language;
+package de.fynn.sco.languageapi.language;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;

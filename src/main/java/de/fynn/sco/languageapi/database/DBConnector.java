@@ -1,6 +1,6 @@
-package de.fynn.mystic.mysticlanguageapi.database;
+package de.fynn.sco.languageapi.database;
 
-import de.fynn.mystic.mysticlanguageapi.file.CFGLoader;
+import de.fynn.sco.languageapi.file.CFGLoader;
 
 import java.sql.*;
 import java.util.ArrayList;

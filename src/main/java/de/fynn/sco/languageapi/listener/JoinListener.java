@@ -1,6 +1,6 @@
-package de.fynn.mystic.mysticlanguageapi.listener;
+package de.fynn.sco.languageapi.listener;
 
-import de.fynn.mystic.mysticlanguageapi.language.LanguageManager;
+import de.fynn.sco.languageapi.language.LanguageManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;

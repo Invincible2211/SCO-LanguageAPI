@@ -1,7 +1,7 @@
-package de.fynn.mystic.mysticlanguageapi.language;
+package de.fynn.sco.languageapi.language;
 
-import de.fynn.mystic.mysticlanguageapi.database.DBConnector;
-import de.fynn.mystic.mysticlanguageapi.file.CFGLoader;
+import de.fynn.sco.languageapi.database.DBConnector;
+import de.fynn.sco.languageapi.file.CFGLoader;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;

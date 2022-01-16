@@ -1,23 +1,21 @@
-package de.fynn.mystic.mysticlanguageapi.command;
+package de.fynn.sco.languageapi.command;
 
-import de.fynn.mystic.mysticlanguageapi.MysticLanguageAPI;
-import de.fynn.mystic.mysticlanguageapi.file.CFGLoader;
-import de.fynn.mystic.mysticlanguageapi.language.Language;
-import de.fynn.mystic.mysticlanguageapi.language.LanguageManager;
+import de.fynn.sco.languageapi.LanguageAPI;
+import de.fynn.sco.languageapi.file.CFGLoader;
+import de.fynn.sco.languageapi.language.LanguageManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.io.File;
-import java.io.InputStreamReader;
 
 public class LanguageCommand implements CommandExecutor {
 
     private LanguageManager languageManager;
 
     {
-        languageManager = new LanguageManager(MysticLanguageAPI.getInstance(),CFGLoader.getDefaultLang(),new File(MysticLanguageAPI.getInstance().getDataFolder()+"/language/defaultMessages.yml"));
+        languageManager = new LanguageManager(LanguageAPI.getInstance(), CFGLoader.getDefaultLang(),new File(LanguageAPI.getInstance().getDataFolder()+"/language/defaultMessages.yml"));
     }
 
     @Override

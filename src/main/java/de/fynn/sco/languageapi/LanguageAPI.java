@@ -1,13 +1,10 @@
-package de.fynn.mystic.mysticlanguageapi;
+package de.fynn.sco.languageapi;
 
-import de.fynn.mystic.mysticlanguageapi.command.LanguageCommand;
-import de.fynn.mystic.mysticlanguageapi.language.Language;
-import de.fynn.mystic.mysticlanguageapi.language.LanguageManager;
-import de.fynn.mystic.mysticlanguageapi.listener.JoinListener;
+import de.fynn.sco.languageapi.command.LanguageCommand;
+import de.fynn.sco.languageapi.listener.JoinListener;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -16,9 +13,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 
-public final class MysticLanguageAPI extends JavaPlugin {
+public final class LanguageAPI extends JavaPlugin {
 
-    private static MysticLanguageAPI instance;
+    private static LanguageAPI instance;
 
     @Override
     public void onEnable() {
@@ -34,7 +31,7 @@ public final class MysticLanguageAPI extends JavaPlugin {
 
     }
 
-    public static MysticLanguageAPI getInstance() {
+    public static LanguageAPI getInstance() {
         return instance;
     }
 
@@ -46,7 +43,7 @@ public final class MysticLanguageAPI extends JavaPlugin {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            ClassLoader classLoader = MysticLanguageAPI.class.getClassLoader();
+            ClassLoader classLoader = LanguageAPI.class.getClassLoader();
             FileConfiguration langFile = YamlConfiguration.loadConfiguration(new InputStreamReader(classLoader.getResourceAsStream("defaultMessages.yml")));
             try {
                 langFile.save(new File(folder.getPath()+"/defaultMessages.yml"));

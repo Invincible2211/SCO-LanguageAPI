@@ -1,17 +1,17 @@
-package de.fynn.mystic.mysticlanguageapi.file;
+package de.fynn.sco.languageapi.file;
 
-import de.fynn.mystic.mysticlanguageapi.MysticLanguageAPI;
+import de.fynn.sco.languageapi.LanguageAPI;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.HashMap;
 
 public class CFGLoader {
 
-    private final static FileConfiguration cfg = MysticLanguageAPI.getInstance().getConfig();
+    private final static FileConfiguration cfg = LanguageAPI.getInstance().getConfig();
 
     static {
         cfg.options().copyDefaults(true);
-        MysticLanguageAPI.getInstance().saveConfig();
+        LanguageAPI.getInstance().saveConfig();
     }
 
     public static HashMap<Integer,String> getDE(){

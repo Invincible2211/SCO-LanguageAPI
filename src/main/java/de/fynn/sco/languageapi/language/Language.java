@@ -1,4 +1,4 @@
-package de.fynn.mystic.mysticlanguageapi.language;
+package de.fynn.sco.languageapi.language;
 
 import java.util.HashMap;
 
