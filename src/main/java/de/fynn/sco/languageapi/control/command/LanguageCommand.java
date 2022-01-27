@@ -1,8 +1,8 @@
-package de.fynn.sco.languageapi.command;
+package de.fynn.sco.languageapi.control.command;
 
-import de.fynn.sco.languageapi.LanguageAPI;
-import de.fynn.sco.languageapi.file.CFGLoader;
-import de.fynn.sco.languageapi.language.LanguageManager;
+import de.fynn.sco.languageapi.LanguageAPIPlugin;
+import de.fynn.sco.languageapi.control.file.CFGLoader;
+import de.fynn.sco.languageapi.control.language.LanguageManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -12,11 +12,7 @@ import java.io.File;
 
 public class LanguageCommand implements CommandExecutor {
 
-    private LanguageManager languageManager;
-
-    {
-        languageManager = new LanguageManager(LanguageAPI.getInstance(), CFGLoader.getDefaultLang(),new File(LanguageAPI.getInstance().getDataFolder()+"/language/defaultMessages.yml"));
-    }
+    private final LanguageManager languageManager = LanguageManager.getInstance();
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {

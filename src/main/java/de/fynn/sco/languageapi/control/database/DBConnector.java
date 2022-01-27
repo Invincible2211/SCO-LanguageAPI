@@ -1,6 +1,6 @@
-package de.fynn.sco.languageapi.database;
+package de.fynn.sco.languageapi.control.database;
 
-import de.fynn.sco.languageapi.file.CFGLoader;
+import de.fynn.sco.languageapi.control.file.CFGLoader;
 
 import java.sql.*;
 import java.util.ArrayList;

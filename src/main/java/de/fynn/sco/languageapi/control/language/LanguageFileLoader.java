@@ -1,5 +1,6 @@
-package de.fynn.sco.languageapi.language;
+package de.fynn.sco.languageapi.control.language;
 
+import de.fynn.sco.languageapi.model.language.Language;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 

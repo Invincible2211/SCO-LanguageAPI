@@ -1,17 +1,17 @@
-package de.fynn.sco.languageapi.file;
+package de.fynn.sco.languageapi.control.file;
 
-import de.fynn.sco.languageapi.LanguageAPI;
+import de.fynn.sco.languageapi.LanguageAPIPlugin;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import java.util.HashMap;
 
 public class CFGLoader {
 
-    private final static FileConfiguration cfg = LanguageAPI.getInstance().getConfig();
+    private final static FileConfiguration cfg = LanguageAPIPlugin.getInstance().getConfig();
 
     static {
         cfg.options().copyDefaults(true);
-        LanguageAPI.getInstance().saveConfig();
+        LanguageAPIPlugin.getInstance().saveConfig();
     }
 
     public static HashMap<Integer,String> getDE(){

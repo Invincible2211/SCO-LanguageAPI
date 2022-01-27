@@ -1,6 +1,6 @@
 name: LanguageAPI
 version: 0.1
-main: LanguageAPI
+main: LanguageAPIPlugin
 api-version: 1.16
 prefix: LanguageAPI
 load: STARTUP

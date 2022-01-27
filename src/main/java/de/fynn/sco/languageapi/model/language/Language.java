@@ -1,4 +1,4 @@
-package de.fynn.sco.languageapi.language;
+package de.fynn.sco.languageapi.model.language;
 
 import java.util.HashMap;
 

@@ -1,7 +1,9 @@
-package de.fynn.sco.languageapi.language;
+package de.fynn.sco.languageapi.control.language;
 
-import de.fynn.sco.languageapi.database.DBConnector;
-import de.fynn.sco.languageapi.file.CFGLoader;
+import de.fynn.sco.languageapi.control.database.DBConnector;
+import de.fynn.sco.languageapi.control.file.CFGLoader;
+import de.fynn.sco.languageapi.model.file.LanguageFile;
+import de.fynn.sco.languageapi.model.language.Language;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
@@ -13,13 +15,14 @@ import java.util.UUID;
 public class LanguageManager {
 
     private static final DBConnector connector;
-    private static final HashMap<Plugin,HashMap<String,Language>> languages = new HashMap<>();
+    private static final HashMap<Plugin,HashMap<String, Language>> languages = new HashMap<>();
     private static final HashMap<Plugin,String> defaultLanguageFromPlugin = new HashMap<>();
     private static final List<String> availableLang = new ArrayList<>();
     private static final HashMap<UUID,String> playerLang = new HashMap<>();
     private static String defaultLang;
     private final String pluginDefaultLang;
     private final Plugin parent;
+    private static LanguageManager instance;
 
     static {
         defaultLang = CFGLoader.getDefaultLang();
@@ -97,6 +100,22 @@ public class LanguageManager {
                 registerLanguage(langFile.getName().replaceFirst(".yml",""), langFile);
             }
         }
+    }
+
+    public static LanguageManager getInstance() {
+        return instance;
+    }
+
+    public void registerPlugin(Plugin plugin){
+
+    }
+
+    public String getTranslation(Plugin plugin, UUID uuid, String message){
+
+    }
+
+    public void registerLanguage(Plugin plugin, LanguageFile languageFile){
+
     }
 
 }

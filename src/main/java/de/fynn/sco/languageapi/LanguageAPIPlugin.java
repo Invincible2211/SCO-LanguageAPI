@@ -1,7 +1,7 @@
 package de.fynn.sco.languageapi;
 
-import de.fynn.sco.languageapi.command.LanguageCommand;
-import de.fynn.sco.languageapi.listener.JoinListener;
+import de.fynn.sco.languageapi.control.command.LanguageCommand;
+import de.fynn.sco.languageapi.control.listener.JoinListener;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -13,9 +13,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
 
-public final class LanguageAPI extends JavaPlugin {
+public final class LanguageAPIPlugin extends JavaPlugin {
 
-    private static LanguageAPI instance;
+    private static LanguageAPIPlugin instance;
 
     @Override
     public void onEnable() {
@@ -31,7 +31,7 @@ public final class LanguageAPI extends JavaPlugin {
 
     }
 
-    public static LanguageAPI getInstance() {
+    public static LanguageAPIPlugin getInstance() {
         return instance;
     }
 
@@ -43,7 +43,7 @@ public final class LanguageAPI extends JavaPlugin {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            ClassLoader classLoader = LanguageAPI.class.getClassLoader();
+            ClassLoader classLoader = LanguageAPIPlugin.class.getClassLoader();
             FileConfiguration langFile = YamlConfiguration.loadConfiguration(new InputStreamReader(classLoader.getResourceAsStream("defaultMessages.yml")));
             try {
                 langFile.save(new File(folder.getPath()+"/defaultMessages.yml"));
@@ -62,6 +62,15 @@ public final class LanguageAPI extends JavaPlugin {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    private void loadAndSaveLanguageFileFromResource(String filename){
+        FileConfiguration langFile = YamlConfiguration.loadConfiguration(new InputStreamReader(LanguageAPIPlugin.class.getClassLoader().getResourceAsStream("defaultMessages.yml")));
+        try {
+            langFile.save(new File(getDataFolder().getPath()+"/language/"+filename));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

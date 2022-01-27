@@ -1,6 +1,6 @@
-package de.fynn.sco.languageapi.listener;
+package de.fynn.sco.languageapi.control.listener;
 
-import de.fynn.sco.languageapi.language.LanguageManager;
+import de.fynn.sco.languageapi.control.language.LanguageManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
