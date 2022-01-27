@@ -3,7 +3,6 @@ package de.fynn.sco.languageapi.control.api;
 import de.fynn.sco.languageapi.control.language.LanguageManager;
 import de.fynn.sco.languageapi.model.exception.InvalidLanguageFileException;
 import de.fynn.sco.languageapi.model.file.LanguageFile;
-import de.fynn.sco.languageapi.utils.FileUtils;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
@@ -35,9 +34,8 @@ public class LanguageAPI {
      * @throws InvalidLanguageFileException
      */
     public LanguageAPI(Plugin parent, File defaultLanguageFile) throws InvalidLanguageFileException {
-        if (!FileUtils.validateLanguageFile(defaultLanguageFile)) throw new InvalidLanguageFileException();
         this.parent = parent;
-        languageManager.registerPlugin(parent);
+        languageManager.registerPlugin(parent, new LanguageFile(defaultLanguageFile));
     }
 
     /**
@@ -51,9 +49,8 @@ public class LanguageAPI {
      * @throws InvalidLanguageFileException
      */
     public LanguageAPI(Plugin parent, InputStream defaultLanguageFileInputStream) throws InvalidLanguageFileException {
-        if (!FileUtils.validateLanguageFile(defaultLanguageFileInputStream)) throw new InvalidLanguageFileException();
         this.parent = parent;
-        languageManager.registerPlugin(parent);
+        languageManager.registerPlugin(parent, new LanguageFile(defaultLanguageFileInputStream));
     }
 
     /*----------------------------------------------METHODEN----------------------------------------------------------*/
@@ -64,11 +61,7 @@ public class LanguageAPI {
      * @throws InvalidLanguageFileException
      */
     public void registerLanguage(File languageFile) throws InvalidLanguageFileException {
-        if (FileUtils.validateLanguageFile(languageFile)){
             languageManager.registerLanguage(parent, new LanguageFile(languageFile));
-        } else {
-            throw new InvalidLanguageFileException();
-        }
     }
 
     /**
@@ -77,11 +70,7 @@ public class LanguageAPI {
      * @throws InvalidLanguageFileException
      */
     public void registerLanguage(InputStream languageFileInputStream) throws InvalidLanguageFileException{
-        if (FileUtils.validateLanguageFile(languageFileInputStream)){
             languageManager.registerLanguage(parent, new LanguageFile(languageFileInputStream));
-        } else {
-            throw new InvalidLanguageFileException();
-        }
     }
 
     /**

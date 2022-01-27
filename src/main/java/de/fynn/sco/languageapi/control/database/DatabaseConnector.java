@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class DBConnector {
+public class DatabaseConnector {
 
     private Connection connection;
     private Statement statement;
@@ -55,6 +55,10 @@ public class DBConnector {
         } catch (SQLException exception) {
             exception.printStackTrace();
         }
+    }
+
+    public boolean alreadyExists(UUID uuid){
+
     }
 
     public String loadPlayer(UUID uuid){
