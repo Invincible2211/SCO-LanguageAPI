@@ -1,0 +1,4 @@
+de_DE
+COMMAND.CHANGE_LANGUAGE :: Du hast deine Sprache erfolgreich gewechselt.
+COMMAND.LANGUAGE_NOT_FOUND :: Die angegebene Sprache wurde nicht gefunden.
+COMMAND.COMMAND_NOT_FOUND :: Der Befehl wurde nicht gefunden, bitte benutze "/language [Name der Sprache]".
