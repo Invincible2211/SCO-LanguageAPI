@@ -95,7 +95,7 @@ public class LanguageAPI {
     public boolean sendPlayerMessageById(UUID playerUUID, String messageKey){
         Player player = Bukkit.getPlayer(playerUUID);
         if (player != null){
-            player.sendMessage(this.getTranslation(playerUUID, messageKey));
+            player.sendMessage("[" + parent.getName() + "] " + this.getTranslation(playerUUID, messageKey));
             return true;
         } else {
             return false;
