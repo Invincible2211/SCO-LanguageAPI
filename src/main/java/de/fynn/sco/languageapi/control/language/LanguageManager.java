@@ -1,11 +1,10 @@
 package de.fynn.sco.languageapi.control.language;
 
 import de.fynn.sco.languageapi.control.database.DatabaseConnector;
-import de.fynn.sco.languageapi.control.file.CFGLoader;
+import de.fynn.sco.languageapi.control.file.ConfigurationLoader;
 import de.fynn.sco.languageapi.model.file.LanguageFile;
 import org.bukkit.plugin.Plugin;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,19 +26,26 @@ public class LanguageManager {
 
     private String defaultLanguage;
 
-    private final DatabaseConnector databaseConnector = new DatabaseConnector();
+    private final DatabaseConnector databaseConnector = DatabaseConnector.getInstance();
 
-    private static LanguageManager instance;
+    private static LanguageManager instance = new LanguageManager();
 
     /*--------------------------------------------KONSTRUKTOREN-------------------------------------------------------*/
 
-    public LanguageManager(){
-        instance = this;
+    /**
+     * Der Konstruktor des LanguageManagers setzt die Instanzvariable auf die aktuelle Instanz,
+     * die durch diesen Konstruktor erzeugt wird und fuehrt dann eine {@link #init() Initialisierung} durch.
+     */
+    private LanguageManager(){
         this.init();
     }
 
     /*----------------------------------------------METHODEN----------------------------------------------------------*/
 
+    /**
+     * Hiermit wird ein neuer Spieler im System registriert.
+     * @param uuid Der zu registrierende Spieler
+     */
     public void registerPlayer(UUID uuid){
         if (this.databaseConnector.alreadyExists(uuid)){
             this.playerLanguageHashMap.put(uuid, this.databaseConnector.loadPlayer(uuid));
@@ -49,6 +55,12 @@ public class LanguageManager {
         }
     }
 
+    /**
+     * Damit kann ein neues Plugin zur verwaltung von dessen Sprachen registriert werden.
+     * @param plugin Das zu registrierende Plugin
+     * @param defaultLanguage Die Sprachdatei, die, wenn nicht anders angegeben oder weil es nicht anders möglich ist,
+     *                       verwendet werden soll
+     */
     public void registerPlugin(Plugin plugin, LanguageFile defaultLanguage){
         HashMap<String, LanguageFile> pluginLanguageFileHashMap = new HashMap<>();
         pluginLanguageFileHashMap.put(defaultLanguage.getIdentifier(), defaultLanguage);
@@ -58,6 +70,11 @@ public class LanguageManager {
         }
     }
 
+    /**
+     * Damit kann eine neue Uebersetzung fuer ein Plugin hinzugefuegt werden.
+     * @param plugin Das Plugin, welches eine weitere Uebersetzung erhaelt
+     * @param languageFile Die Sprachdatei, die die Uebersetzungen enthaelt
+     */
     public void registerLanguage(Plugin plugin, LanguageFile languageFile){
         HashMap<String, LanguageFile> pluginLanguageFileHashMap = this.languageFiles.get(plugin);
         pluginLanguageFileHashMap.put(languageFile.getIdentifier(), languageFile);
@@ -66,21 +83,42 @@ public class LanguageManager {
         }
     }
 
+    /**
+     * Mit dieser Methode kann die bevorzugte Sprache eines Spielers eingestellt werden.
+     * @param uuid Die UUID des Spielers
+     * @param language Der name der Sprache
+     */
     public void setLanguage(UUID uuid, String language){
         this.playerLanguageHashMap.replace(uuid, language);
         this.databaseConnector.updatePlayer(uuid, language);
     }
 
+    /**
+     * Ueberprueft, ob der Name einer Sprache registriert wurde.
+     * @param language Der Name der Sprache
+     * @return Wahrheitswert, ob die Sprache schon registriert worden ist
+     */
     public boolean containsLanguage(String language){
         return this.availableLanguage.contains(language);
     }
 
-    public String getTranslation(Plugin plugin, UUID uuid, String message){
-        return this.languageFiles.get(plugin).get(playerLanguageHashMap.get(uuid)).getTranslation(message);
+    /**
+     * Gibt den String zurueck, der in der bevorzugten Sprache des Spielers unter dem angegebenen Key zu finden ist.
+     * Wenn die bevorzugte Sprache nicht vorhanden ist, wird die Standartsprache des jeweiligen Plugins benutzt.
+     * @param plugin Das Plugin, von welchem der String registriert wurde
+     * @param uuid Die UUID des Spielers, dem dieser String angezeigt werden soll
+     * @param messageKey Der Key, unter welchem der String in der .language Datei gespeichert ist
+     * @return Den String in der gewuenschten Sprache oder alternativ den String in der Standartsprache des Plugins
+     */
+    public String getTranslation(Plugin plugin, UUID uuid, String messageKey){
+        return this.languageFiles.get(plugin).get(playerLanguageHashMap.get(uuid)).getTranslation(messageKey);
     }
 
+    /**
+     * Bei der Initialisierung werden alle Daten fuer bereits registrierte Spieler aus der Datenbank geladen.
+     */
     private void init(){
-        this.defaultLanguage = CFGLoader.getDefaultLang();
+        this.defaultLanguage = ConfigurationLoader.getDefaultLang();
         for (UUID uuid:
                 databaseConnector.getRegisteredPlayers()) {
             this.playerLanguageHashMap.put(uuid, databaseConnector.loadPlayer(uuid));
@@ -91,6 +129,10 @@ public class LanguageManager {
 
     public static LanguageManager getInstance() {
         return instance;
+    }
+
+    public List<String> getAvailableLanguage(){
+        return availableLanguage;
     }
 
 }

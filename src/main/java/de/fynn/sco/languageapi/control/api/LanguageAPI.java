@@ -3,6 +3,8 @@ package de.fynn.sco.languageapi.control.api;
 import de.fynn.sco.languageapi.control.language.LanguageManager;
 import de.fynn.sco.languageapi.model.exception.InvalidLanguageFileException;
 import de.fynn.sco.languageapi.model.file.LanguageFile;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.io.File;
@@ -81,6 +83,23 @@ public class LanguageAPI {
      */
     public String getTranslation(UUID playerUUID, String messageKey){
         return languageManager.getTranslation(parent, playerUUID, messageKey);
+    }
+
+    /**
+     * Sendet einem Spieler direkt das Ergebnis der {@link #getTranslation(UUID, String) getTranslation} Methode
+     * @param playerUUID Die UUID des Spielers, der die Nachricht bekommen soll
+     * @param messageKey Ein String, der einen Key in der Language-Datei repraesentiert
+     * @return Wahrheitswert, ob die Nachricht gesendet werden konnte. Ist der Spieler nicht online oder exestiert nicht,
+     * wird false zurueckgegeben.
+     */
+    public boolean sendPlayerMessageById(UUID playerUUID, String messageKey){
+        Player player = Bukkit.getPlayer(playerUUID);
+        if (player != null){
+            player.sendMessage(this.getTranslation(playerUUID, messageKey));
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }

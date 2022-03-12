@@ -1,4 +1,4 @@
-identifier : de_DE
-message_1 : abc
-message_2 : ghj
-message_n : wer
+identifier :: de_DE
+message_1 :: abc
+message_2 :: ghj
+message_n :: wer
