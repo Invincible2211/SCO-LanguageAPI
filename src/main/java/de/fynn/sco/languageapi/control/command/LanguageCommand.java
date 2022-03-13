@@ -42,15 +42,24 @@ public class LanguageCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if(sender instanceof Player){
             Player player = (Player) sender;
-            if(args.length==1){
-                if(languageManager.containsLanguage(args[0])){
-                    languageManager.setLanguage(player.getUniqueId(),args[0]);
+            if(args.length!=0){
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < args.length; i++) {
+                    builder.append(args[i]);
+                    if (i < args.length-1){
+                        builder.append(" ");
+                    }
+                }
+                String language = builder.toString();
+                if(languageManager.containsLanguage(language)){
+                    languageManager.setLanguage(player.getUniqueId(),language);
                     languageAPI.sendPlayerMessageById(player.getUniqueId(), MessageKeys.COMMAND_CHANGE_LANGUAGE);
                 }else {
                     languageAPI.sendPlayerMessageById(player.getUniqueId(),MessageKeys.COMMAND_LANGUAGE_NOT_FOUND);
                 }
             }else {
-                languageAPI.sendPlayerMessageById(player.getUniqueId(),MessageKeys.COMMAND_COMMAND_NOT_FOUND);
+                languageAPI.sendPlayerMessageById(player.getUniqueId(), MessageKeys.LANGUAGE_INFO
+                        + languageManager.getPlayerLanguageName(player.getUniqueId()));
                 return false;
             }
         }else {

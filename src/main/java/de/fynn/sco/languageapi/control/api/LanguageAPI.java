@@ -9,6 +9,8 @@ import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -32,48 +34,35 @@ public class LanguageAPI {
      * Dies ist unter anderem die standart Sprache des Plugins und wird verwendet, wenn ein Spieler eine Sprache eingestellt
      * hat, die von dem regestrierten Plugin nicht bereitgestellt wird.
      * @param parent das Plugin, welches die API benutzen moechte
-     * @param defaultLanguageFile eine Datei, die eine Sprache beinhaltet
+     * @param defaultLanguage
+     * @param languageFileFolderPath
      * @throws InvalidLanguageFileException
      */
-    public LanguageAPI(Plugin parent, File defaultLanguageFile) throws InvalidLanguageFileException {
+    public LanguageAPI(Plugin parent, String defaultLanguage, String languageFileFolderPath) throws InvalidLanguageFileException {
         this.parent = parent;
-        languageManager.registerPlugin(parent, new LanguageFile(defaultLanguageFile));
-    }
-
-    /**
-     * Der Konstruktor benoetigt das Plugin, fuer welches die Instanz der LanguageAPI erstellt wird,
-     * um Anfragen fuer uebersetzungen den richtigen LanguageFiles zuordnen zu koennen. Ausserdem wird
-     * zur instanzierung mindestens ein InputStream benoetigt, der eine Language-Datei beinhaltet.
-     * Dies ist unter anderem die standart Sprache des Plugins und wird verwendet, wenn ein Spieler eine Sprache eingestellt
-     * hat, die von dem regestrierten Plugin nicht bereitgestellt wird.
-     * @param parent das Plugin, welches die API benutzen moechte
-     * @param defaultLanguageFileInputStream ein Stream, der die Language-Datei beinhaltet
-     * @throws InvalidLanguageFileException
-     */
-    public LanguageAPI(Plugin parent, InputStream defaultLanguageFileInputStream) throws InvalidLanguageFileException {
-        this.parent = parent;
-        languageManager.registerPlugin(parent, new LanguageFile(defaultLanguageFileInputStream));
+        File parentFolder = new File(languageFileFolderPath);
+        File[] files = parentFolder.listFiles();
+        List<LanguageFile> languageFiles = new ArrayList<>();
+        LanguageFile defaultLanguageFile = null;
+        for (File file:
+             files) {
+            if (file.getName().contains(".language")){
+                LanguageFile currentLangFile = new LanguageFile(file);
+                if (currentLangFile.getIdentifier().equals(defaultLanguage)){
+                    defaultLanguageFile = currentLangFile;
+                } else {
+                    languageFiles.add(currentLangFile);
+                }
+            }
+        }
+        languageManager.registerPlugin(parent, defaultLanguageFile);
+        for (LanguageFile language:
+             languageFiles) {
+            languageManager.registerLanguage(parent, language);
+        }
     }
 
     /*----------------------------------------------METHODEN----------------------------------------------------------*/
-
-    /**
-     * Wird verwendet, um weitere unterstuetzte Sprachen hinzuzufuegen. Das File Objekt muss eine .language Datei sein.
-     * @param languageFile die Language-Datei, in der die Sprache definiert ist
-     * @throws InvalidLanguageFileException
-     */
-    public void registerLanguage(File languageFile) throws InvalidLanguageFileException {
-            languageManager.registerLanguage(parent, new LanguageFile(languageFile));
-    }
-
-    /**
-     * Wird verwendet, um weitere unterstuetzte Sprachen hinzuzufuegen. Der InputStream muss eine .language Datei sein.
-     * @param languageFileInputStream ein InputStream, der die Language-Datei beinhaltet
-     * @throws InvalidLanguageFileException
-     */
-    public void registerLanguage(InputStream languageFileInputStream) throws InvalidLanguageFileException{
-            languageManager.registerLanguage(parent, new LanguageFile(languageFileInputStream));
-    }
 
     /**
      * Gibt die ubersetzung fuer einen bestimmten String in der Sprache, die der betroffene Spieler eingestellt hat zurueck.
@@ -103,30 +92,12 @@ public class LanguageAPI {
     }
 
     /**
-     * Mit dieser Methode koennen Namen fuer Sprachkennungen hinzugefuegt werden
-     * @param languageCode Die Abkuerzung der Sprache
-     * @param languageName Der gewuenschte Name der Sprache
+     * Wird verwendet, um weitere unterstuetzte Sprachen hinzuzufuegen. Das File Objekt muss eine .language Datei sein.
+     * @param languageFile die Language-Datei, in der die Sprache definiert ist
+     * @throws InvalidLanguageFileException
      */
-    public void addMapping(String languageCode, String languageName){
-        languageManager.addMapping(languageCode, languageName);
-    }
-
-    /**
-     * Mit dieser Methode kann der Name einer Sprache anhand der Abkuerzung herausgefunden werden
-     * @param languageCode Die Abkuerzung der Sprache
-     * @return Der Name der Sprache
-     */
-    public String mapLanguageCode(String languageCode){
-        return languageManager.mapLanguageCode(languageCode);
-    }
-
-    /**
-     * Mit dieser Methode kann die Abkuerzung einer Sprache anhand des Namens herausgefunden werden
-     * @param languageName Der Name der Sprache
-     * @return Die Abkuerzung der Sprache
-     */
-    public String mapLanguageName(String languageName){
-        return languageManager.mapLanguageName(languageName);
+    private void registerLanguage(File languageFile) throws InvalidLanguageFileException {
+        languageManager.registerLanguage(parent, new LanguageFile(languageFile));
     }
 
 }

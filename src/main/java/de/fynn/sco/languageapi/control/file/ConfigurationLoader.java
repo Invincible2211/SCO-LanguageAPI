@@ -2,15 +2,8 @@ package de.fynn.sco.languageapi.control.file;
 
 import de.fynn.sco.languageapi.LanguageAPIPlugin;
 import de.fynn.sco.languageapi.model.DatabaseData;
-import de.fynn.sco.languageapi.model.file.AvaiableLanguages;
 import de.fynn.sco.languageapi.model.interfaces.ConfigurationFileKeys;
-import de.fynn.sco.languageapi.model.interfaces.Strings;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Freddyblitz
@@ -42,38 +35,6 @@ public class ConfigurationLoader {
         return config.getString("defaultLanguage");
     }
 
-    /**
-     * Diese Methode gibt eine Datei zurueck, welche die in der Config eingestellte Standartsprache repraesentiert.
-     * Ist in der Config ein fehlerhafter Wert eingestellt (die Sprache exestiert nicht),
-     * wird das Plugin disabled.
-     * @return Eine Datei, die alle Uebersetzungen dieses Plugins enthaelt
-     */
-    public static File getDefaultLangFile(){
-        File languageFile = new File( LanguageAPIPlugin.getPlugin().getDataFolder() + Strings.PARENT_FOLDER_NAME + "/" + getDefaultLang() + ".language");
-        if (languageFile.exists()){
-            return languageFile;
-        } else {
-            LanguageAPIPlugin.getPlugin().getLogger().warning(Strings.DEFAULT_LANGUAGE_FILE_DOES_NOT_EXISTS);
-            Bukkit.getPluginManager().disablePlugin(LanguageAPIPlugin.getPlugin());
-            return null;
-        }
-    }
-
-    /**
-     * Diese Methode gibt alle .language Files zurueck, außer der standard Language,
-     * die im AvailableLanguages Enum aufgelistet sind
-     * @return eine Liste mit allen anderen .language Files
-     */
-    public static List<File> getOtherLanguageFiles(){
-        List<File> langFiles = new ArrayList<>();
-        for (AvaiableLanguages languageName:
-                AvaiableLanguages.values()) {
-            if (languageName.getValue() != getDefaultLang()){
-                langFiles.add(new File( LanguageAPIPlugin.getPlugin().getDataFolder() + Strings.PARENT_FOLDER_NAME + "/" + languageName.getValue() + ".language"));
-            }
-        }
-        return langFiles;
-    }
 
     /**
      * Diese Methode gibt alle Werte, die fuer den Datenbank-Connector wichtig sind als Record zurueck

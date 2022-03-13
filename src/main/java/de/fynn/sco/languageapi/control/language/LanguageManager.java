@@ -1,14 +1,19 @@
 package de.fynn.sco.languageapi.control.language;
 
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.events.ListeningWhitelist;
+import com.comphenix.protocol.events.PacketEvent;
+import com.comphenix.protocol.events.PacketListener;
+import com.comphenix.protocol.injector.GamePhase;
+import de.fynn.sco.languageapi.LanguageAPIPlugin;
 import de.fynn.sco.languageapi.control.database.DatabaseConnector;
 import de.fynn.sco.languageapi.control.file.ConfigurationLoader;
 import de.fynn.sco.languageapi.model.file.LanguageFile;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author Freddyblitz
@@ -40,6 +45,33 @@ public class LanguageManager {
      */
     private LanguageManager(){
         this.init();
+
+        ProtocolLibrary.getProtocolManager().addPacketListener(new PacketListener(){
+
+            public Plugin getPlugin() {
+                return LanguageAPIPlugin.getPlugin();
+            }
+
+            public ListeningWhitelist getReceivingWhitelist() {
+                return ListeningWhitelist.newBuilder().gamePhase(GamePhase.PLAYING).highest().types(PacketType.Play.Client.SETTINGS).build();
+            }
+
+            public ListeningWhitelist getSendingWhitelist() {
+                return ListeningWhitelist.newBuilder().gamePhase(GamePhase.PLAYING).highest().types(PacketType.Play.Client.SETTINGS).build();
+            }
+
+            @Override
+            public void onPacketReceiving(PacketEvent e) {
+                if (!(e.getPacket().getType() == PacketType.Play.Client.SETTINGS)) return;
+                String language = e.getPacket().getStrings().readSafely(0).toLowerCase(Locale.ROOT);
+                setLanguage(e.getPlayer().getUniqueId(), language);
+            }
+
+            public void onPacketSending(PacketEvent e) {
+                return;
+            }
+
+        });
     }
 
     /*----------------------------------------------METHODEN----------------------------------------------------------*/
@@ -48,12 +80,12 @@ public class LanguageManager {
      * Hiermit wird ein neuer Spieler im System registriert.
      * @param uuid Der zu registrierende Spieler
      */
-    public void registerPlayer(UUID uuid){
-        if (this.databaseConnector.alreadyExists(uuid)){
-            this.playerLanguageHashMap.put(uuid, this.databaseConnector.loadPlayer(uuid));
+    public void registerPlayer(Player player){
+        if (this.databaseConnector.alreadyExists(player.getUniqueId())){
+            this.playerLanguageHashMap.put(player.getUniqueId(), this.databaseConnector.loadPlayer(player.getUniqueId()));
         } else {
-            this.playerLanguageHashMap.put(uuid, this.defaultLanguage);
-            this.databaseConnector.insertPlayer(uuid, this.defaultLanguage);
+            this.playerLanguageHashMap.put(player.getUniqueId(), player.getLocale());
+            this.databaseConnector.insertPlayer(player.getUniqueId(), player.getLocale());
         }
     }
 
@@ -69,6 +101,7 @@ public class LanguageManager {
         this.languageFiles.put(plugin,pluginLanguageFileHashMap);
         if (!this.containsLanguage(defaultLanguage.getIdentifier())){
             this.availableLanguage.add(defaultLanguage.getIdentifier());
+            this.languageNameMapping.put(defaultLanguage.getIdentifier(), defaultLanguage.getName());
         }
     }
 
@@ -82,6 +115,7 @@ public class LanguageManager {
         pluginLanguageFileHashMap.put(languageFile.getIdentifier(), languageFile);
         if (!this.containsLanguage(languageFile.getIdentifier())){
             this.availableLanguage.add(languageFile.getIdentifier());
+            this.languageNameMapping.put(languageFile.getIdentifier(), languageFile.getName());
         }
     }
 
@@ -114,16 +148,11 @@ public class LanguageManager {
      * @return Den String in der gewuenschten Sprache oder alternativ den String in der Standartsprache des Plugins
      */
     public String getTranslation(Plugin plugin, UUID uuid, String messageKey){
-        return this.languageFiles.get(plugin).get(playerLanguageHashMap.get(uuid)).getTranslation(messageKey);
-    }
-
-    /**
-     * Mit dieser Methode koennen Namen fuer Sprachkennungen hinzugefuegt werden
-     * @param languageCode Die Abkuerzung der Sprache
-     * @param languageName Der gewuenschte Name der Sprache
-     */
-    public void addMapping(String languageCode, String languageName){
-        this.languageNameMapping.put(languageCode, languageName);
+        if (languageFiles.get(plugin).containsKey(playerLanguageHashMap.get(uuid))){
+            return this.languageFiles.get(plugin).get(playerLanguageHashMap.get(uuid)).getTranslation(messageKey);
+        } else {
+            return this.languageFiles.get(plugin).get(defaultLanguage).getTranslation(messageKey);
+        }
     }
 
     /**
@@ -148,6 +177,24 @@ public class LanguageManager {
             }
         }
         return languageName;
+    }
+
+    /**
+     *
+     * @param uuid
+     * @return
+     */
+    public String getPlayerLanguageName(UUID uuid){
+        return mapLanguageCode(playerLanguageHashMap.get(uuid));
+    }
+
+    /**
+     * Mit dieser Methode koennen Namen fuer Sprachkennungen hinzugefuegt werden
+     * @param languageCode Die Abkuerzung der Sprache
+     * @param languageName Der gewuenschte Name der Sprache
+     */
+    private void addMapping(String languageCode, String languageName){
+        this.languageNameMapping.put(languageCode, languageName);
     }
 
     /**

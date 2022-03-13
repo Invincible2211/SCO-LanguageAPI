@@ -12,6 +12,7 @@ import java.util.HashMap;
 public class LanguageFile {
 
     private final String identifier;
+    private final String name;
     private final HashMap<String,String> translations = new HashMap<>();
 
     /*--------------------------------------------KONSTRUKTOREN-------------------------------------------------------*/
@@ -23,23 +24,17 @@ public class LanguageFile {
      */
     public LanguageFile(File file) throws InvalidLanguageFileException {
         String tempIdentifier = null;
+        String tempName = null;
         try{
             BufferedReader reader = new BufferedReader(new FileReader(file));
-            tempIdentifier = this.readFile(reader);
+            String[] values = this.readFile(reader);
+            tempIdentifier = values[0];
+            tempName = values[1];
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
         this.identifier = tempIdentifier;
-    }
-
-    /**
-     * Der Konstruktor zum Erstellen von LanguageFile Objekten mit einem Stream
-     * @param inputStream Ein Stream der eine .language Datei beinhaltet, die alle Uebersetzunngen enthaelt
-     * @throws InvalidLanguageFileException Weitergereichte Exception von der {@link #readFile(BufferedReader) readFile} Methode
-     */
-    public LanguageFile(InputStream inputStream) throws InvalidLanguageFileException{
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-        this.identifier = this.readFile(reader);
+        this.name = tempName;
     }
 
     /*----------------------------------------------METHODEN----------------------------------------------------------*/
@@ -61,12 +56,14 @@ public class LanguageFile {
      * @throws InvalidLanguageFileException Eine Exception wird ausgeloest, wenn kein Identifier vorhanden ist
      * oder wenn ein Key bzw. Value leer ist
      */
-    private String readFile(BufferedReader reader) throws InvalidLanguageFileException{
+    private String[] readFile(BufferedReader reader) throws InvalidLanguageFileException{
         String tempIdentifier = null;
+        String tempName = null;
         try {
             String line = reader.readLine();
             if (line == null) throw new InvalidLanguageFileException();
-            tempIdentifier = line;
+            tempIdentifier = line.split(" :: ")[0];
+            tempName = line.split(" :: ")[1];
             while ( (line = reader.readLine()) != null ){
                 String[] valuesFromString = line.split(" :: ");
                 if (valuesFromString[0] == null || valuesFromString[1] == null) throw new InvalidLanguageFileException();
@@ -75,13 +72,17 @@ public class LanguageFile {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return tempIdentifier;
+        return new String[]{tempIdentifier, tempName};
     }
 
     /*-----------------------------------------GETTER AND SETTER------------------------------------------------------*/
 
     public String getIdentifier(){
         return this.identifier;
+    }
+
+    public String getName() {
+        return name;
     }
 
 }
