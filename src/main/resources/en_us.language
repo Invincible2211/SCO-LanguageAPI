@@ -1,4 +1,4 @@
-en_EN
+en_us :: English (United States)
 COMMAND.CHANGE_LANGUAGE :: You have successfully changed your language.
 COMMAND.LANGUAGE_NOT_FOUND :: The specified language was not found.
-COMMAND.COMMAND_NOT_FOUND :: The command was not found, please use "/language [name of language]".
+COMMAND.LANGUAGE_INFO :: Current language :

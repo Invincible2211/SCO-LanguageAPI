@@ -64,6 +64,7 @@ public final class LanguageAPIPlugin extends JavaPlugin {
      */
     private void setup(){
         File folder = new File(getDataFolder() + "/" + Strings.PARENT_FOLDER_NAME);
+
         if(!folder.exists()){
             folder.mkdirs();
             this.loadAndSaveLanguageFileFromResource(Strings.DE_LANGUAGE_FILE);
@@ -74,17 +75,11 @@ public final class LanguageAPIPlugin extends JavaPlugin {
 
         //register this Plugin in the API
         try {
-            this.apiInstance = new LanguageAPI(this, ConfigurationLoader.getDefaultLangFile());
-            for (File languageFile : ConfigurationLoader.getOtherLanguageFiles()) {
-                apiInstance.registerLanguage(languageFile);
-            }
+            this.apiInstance = new LanguageAPI(this, ConfigurationLoader.getDefaultLang(), this.getDataFolder() + Strings.PARENT_FOLDER_NAME);
         } catch (InvalidLanguageFileException e) {
             e.printStackTrace();
             pluginManager.disablePlugin(this);
         }
-
-        apiInstance.addMapping("de_DE","German");
-        apiInstance.addMapping("en_EN", "Englisch");
     }
 
     /**

@@ -10,4 +10,4 @@ database:
   password:
     ''
 defaultLanguage:
-  'de_DE'
+  'de_de'
