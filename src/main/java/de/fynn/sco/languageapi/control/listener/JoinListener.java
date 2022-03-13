@@ -24,7 +24,7 @@ public class JoinListener implements Listener {
      */
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event){
-        if(event.getPlayer().hasPlayedBefore()){
+        if(!event.getPlayer().hasPlayedBefore()){
             languageManager.registerPlayer(event.getPlayer().getUniqueId());
         }
     }

@@ -3,20 +3,17 @@ package de.fynn.sco.languageapi;
 import de.fynn.sco.languageapi.control.api.LanguageAPI;
 import de.fynn.sco.languageapi.control.command.LanguageCommand;
 import de.fynn.sco.languageapi.control.file.ConfigurationLoader;
-import de.fynn.sco.languageapi.control.language.LanguageManager;
 import de.fynn.sco.languageapi.control.listener.JoinListener;
 import de.fynn.sco.languageapi.model.exception.InvalidLanguageFileException;
 import de.fynn.sco.languageapi.model.interfaces.Strings;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 
 /**
  * @author Freddyblitz
@@ -51,14 +48,6 @@ public final class LanguageAPIPlugin extends JavaPlugin {
         this.getCommand("language").setExecutor(languageCommand);
         this.getCommand("language").setTabCompleter(languageCommand.getTabComplete());
 
-        //register this Plugin in the API
-        try {
-            this.apiInstance = new LanguageAPI(this, ConfigurationLoader.getDefaultLangFile());
-        } catch (InvalidLanguageFileException e) {
-            e.printStackTrace();
-            pluginManager.disablePlugin(this);
-        }
-
     }
 
     /**
@@ -76,14 +65,26 @@ public final class LanguageAPIPlugin extends JavaPlugin {
     private void setup(){
         File folder = new File(getDataFolder() + "/" + Strings.PARENT_FOLDER_NAME);
         if(!folder.exists()){
-            try {
-                Files.createDirectory(folder.getAbsoluteFile().toPath());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            folder.mkdirs();
             this.loadAndSaveLanguageFileFromResource(Strings.DE_LANGUAGE_FILE);
             this.loadAndSaveLanguageFileFromResource(Strings.EN_LANGUAGE_FILE);
         }
+
+        PluginManager pluginManager = Bukkit.getPluginManager();
+
+        //register this Plugin in the API
+        try {
+            this.apiInstance = new LanguageAPI(this, ConfigurationLoader.getDefaultLangFile());
+            for (File languageFile : ConfigurationLoader.getOtherLanguageFiles()) {
+                apiInstance.registerLanguage(languageFile);
+            }
+        } catch (InvalidLanguageFileException e) {
+            e.printStackTrace();
+            pluginManager.disablePlugin(this);
+        }
+
+        apiInstance.addMapping("de_DE","German");
+        apiInstance.addMapping("en_EN", "Englisch");
     }
 
     /**
@@ -92,10 +93,8 @@ public final class LanguageAPIPlugin extends JavaPlugin {
      * @param filename Der Name der Datei, die im Pluginordner verfuegbar sein soll
      */
     private void loadAndSaveLanguageFileFromResource(String filename){
-        FileConfiguration langFile = YamlConfiguration.loadConfiguration(
-                new InputStreamReader(LanguageAPIPlugin.class.getClassLoader().getResourceAsStream(filename))); //TODO ueberpruefen, ob nicht .yml Dateien auch geladen werden koennen
         try {
-            langFile.save(new File(getDataFolder().getPath() + Strings.PARENT_FOLDER_NAME + "/" + filename));
+            Files.copy(LanguageAPIPlugin.class.getClassLoader().getResourceAsStream(filename), new File(getDataFolder().getPath() + Strings.PARENT_FOLDER_NAME + "/" + filename).toPath(), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             e.printStackTrace();
         }

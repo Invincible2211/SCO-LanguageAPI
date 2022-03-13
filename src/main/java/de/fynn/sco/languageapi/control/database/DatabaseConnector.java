@@ -56,16 +56,16 @@ public class DatabaseConnector {
             e.printStackTrace();
             Bukkit.getPluginManager().disablePlugin(LanguageAPIPlugin.getPlugin());
         }
-        createSchema = connection.prepareStatement("CREATE SCHEMA IF NOT EXISTS " + databaseData.schema() + ";");
-        createTable = connection.prepareStatement("CREATE TABLE IF NOT EXISTS " + databaseData.schema()
+        createSchema = connection.prepareStatement("CREATE SCHEMA IF NOT EXISTS " + databaseData.getSchema() + ";");
+        createTable = connection.prepareStatement("CREATE TABLE IF NOT EXISTS " + databaseData.getSchema()
                 + ".language (uuid VARCHAR(150) NOT NULL, language VARCHAR(150) NOT NULL ,PRIMARY KEY (uuid));");
         createSchema.execute();
         createTable.execute();
-        insertPlayer = connection.prepareStatement("INSERT INTO " + databaseData.schema() + ".language (uuid,language) VALUES (?,?);");
-        updatePlayer = connection.prepareStatement("UPDATE " + databaseData.schema() + ".language SET language = ? WHERE uuid = ?;");
-        alreadyExists = connection.prepareStatement("SELECT * FROM " + databaseData.schema() + ".language WHERE uuid = ?;");
-        loadPlayer = connection.prepareStatement("SELECT language FROM " + databaseData.schema() + ".language WHERE uuid = ?;");
-        getRegisteredPlayers = connection.prepareStatement("SELECT uuid FROM " + databaseData.schema() + ".language");
+        insertPlayer = connection.prepareStatement("INSERT INTO " + databaseData.getSchema() + ".language (uuid,language) VALUES (?,?);");
+        updatePlayer = connection.prepareStatement("UPDATE " + databaseData.getSchema() + ".language SET language = ? WHERE uuid = ?;");
+        alreadyExists = connection.prepareStatement("SELECT * FROM " + databaseData.getSchema() + ".language WHERE uuid = ?;");
+        loadPlayer = connection.prepareStatement("SELECT language FROM " + databaseData.getSchema() + ".language WHERE uuid = ?;");
+        getRegisteredPlayers = connection.prepareStatement("SELECT uuid FROM " + databaseData.getSchema() + ".language");
     }
 
     /*----------------------------------------------METHODEN----------------------------------------------------------*/
@@ -75,7 +75,8 @@ public class DatabaseConnector {
      * @throws SQLException Gibt auftretende SQL-Exceptions weiter
      */
     private void connect() throws SQLException{
-        connection = DriverManager.getConnection("jdbc:mysql://"+databaseData.ipAdress()+":"+databaseData.port()+"?useSSL=false",databaseData.username(), databaseData.password());
+        connection = DriverManager.getConnection("jdbc:mysql://"+databaseData.getIpAdress()+":"
+                +databaseData.getPort(),databaseData.getUsername(), databaseData.getPassword());
     }
 
     /**
@@ -100,8 +101,8 @@ public class DatabaseConnector {
      */
     public void updatePlayer(UUID uuid, String newLangauge){
         try {
-            updatePlayer.setString(1, uuid.toString());
-            updatePlayer.setString(2, newLangauge);
+            updatePlayer.setString(2, uuid.toString());
+            updatePlayer.setString(1, newLangauge);
             updatePlayer.executeUpdate();
         } catch (SQLException exception) {
             exception.printStackTrace();
@@ -116,7 +117,8 @@ public class DatabaseConnector {
     public boolean alreadyExists(UUID uuid){
         try {
             alreadyExists.setString(1, uuid.toString());
-            return alreadyExists.execute();
+            ResultSet resultSet =  alreadyExists.executeQuery();
+            return resultSet.next();
         } catch (SQLException exception){
             exception.printStackTrace();
         }

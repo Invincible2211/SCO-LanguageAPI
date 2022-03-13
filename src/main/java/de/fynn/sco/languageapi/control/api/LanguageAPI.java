@@ -102,4 +102,31 @@ public class LanguageAPI {
         }
     }
 
+    /**
+     * Mit dieser Methode koennen Namen fuer Sprachkennungen hinzugefuegt werden
+     * @param languageCode Die Abkuerzung der Sprache
+     * @param languageName Der gewuenschte Name der Sprache
+     */
+    public void addMapping(String languageCode, String languageName){
+        languageManager.addMapping(languageCode, languageName);
+    }
+
+    /**
+     * Mit dieser Methode kann der Name einer Sprache anhand der Abkuerzung herausgefunden werden
+     * @param languageCode Die Abkuerzung der Sprache
+     * @return Der Name der Sprache
+     */
+    public String mapLanguageCode(String languageCode){
+        return languageManager.mapLanguageCode(languageCode);
+    }
+
+    /**
+     * Mit dieser Methode kann die Abkuerzung einer Sprache anhand des Namens herausgefunden werden
+     * @param languageName Der Name der Sprache
+     * @return Die Abkuerzung der Sprache
+     */
+    public String mapLanguageName(String languageName){
+        return languageManager.mapLanguageName(languageName);
+    }
+
 }

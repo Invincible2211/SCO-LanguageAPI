@@ -82,7 +82,12 @@ public class LanguageCommand implements CommandExecutor {
         @Override
         public List<String> onTabComplete(CommandSender commandSender, Command command, String label, String[] args) {
             List<String> completions = new ArrayList<>();
-            StringUtil.copyPartialMatches(args[0], languageManager.getAvailableLanguage(), completions);
+            List<String> mappedLanguages = new ArrayList<>();
+            for (String languageCode:
+                 languageManager.getAvailableLanguage()) {
+                mappedLanguages.add(languageManager.mapLanguageCode(languageCode));
+            }
+            StringUtil.copyPartialMatches(args[0], mappedLanguages, completions);
             Collections.sort(completions);
             return completions;
         }

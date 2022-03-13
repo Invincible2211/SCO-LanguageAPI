@@ -30,6 +30,8 @@ public class LanguageManager {
 
     private static LanguageManager instance = new LanguageManager();
 
+    private final HashMap<String, String> languageNameMapping = new HashMap<>();
+
     /*--------------------------------------------KONSTRUKTOREN-------------------------------------------------------*/
 
     /**
@@ -89,8 +91,9 @@ public class LanguageManager {
      * @param language Der name der Sprache
      */
     public void setLanguage(UUID uuid, String language){
-        this.playerLanguageHashMap.replace(uuid, language);
-        this.databaseConnector.updatePlayer(uuid, language);
+        String resolvedLanguage = availableLanguage.contains(language) ? language : this.mapLanguageName(language);
+        this.playerLanguageHashMap.replace(uuid, resolvedLanguage);
+        this.databaseConnector.updatePlayer(uuid, resolvedLanguage);
     }
 
     /**
@@ -99,7 +102,7 @@ public class LanguageManager {
      * @return Wahrheitswert, ob die Sprache schon registriert worden ist
      */
     public boolean containsLanguage(String language){
-        return this.availableLanguage.contains(language);
+        return this.availableLanguage.contains(language) || this.languageNameMapping.containsValue(language);
     }
 
     /**
@@ -112,6 +115,39 @@ public class LanguageManager {
      */
     public String getTranslation(Plugin plugin, UUID uuid, String messageKey){
         return this.languageFiles.get(plugin).get(playerLanguageHashMap.get(uuid)).getTranslation(messageKey);
+    }
+
+    /**
+     * Mit dieser Methode koennen Namen fuer Sprachkennungen hinzugefuegt werden
+     * @param languageCode Die Abkuerzung der Sprache
+     * @param languageName Der gewuenschte Name der Sprache
+     */
+    public void addMapping(String languageCode, String languageName){
+        this.languageNameMapping.put(languageCode, languageName);
+    }
+
+    /**
+     * Mit dieser Methode kann der Name einer Sprache anhand der Abkuerzung herausgefunden werden
+     * @param languageCode Die Abkuerzung der Sprache
+     * @return Der Name der Sprache
+     */
+    public String mapLanguageCode(String languageCode){
+        return this.languageNameMapping.getOrDefault(languageCode, languageCode);
+    }
+
+    /**
+     * Mit dieser Methode kann die Abkuerzung einer Sprache anhand des Namens herausgefunden werden
+     * @param languageName Der Name der Sprache
+     * @return Die Abkuerzung der Sprache
+     */
+    public String mapLanguageName(String languageName){
+        for (String languageCode:
+             languageNameMapping.keySet()) {
+            if (languageNameMapping.get(languageCode).equals(languageName)){
+                return languageCode;
+            }
+        }
+        return languageName;
     }
 
     /**

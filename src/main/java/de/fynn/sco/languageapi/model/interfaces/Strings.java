@@ -8,11 +8,9 @@ public interface Strings {
 
     String PARENT_FOLDER_NAME = "/Language";
 
-    String DE_LANGUAGE_FILE = "de_DE";
+    String DE_LANGUAGE_FILE = "de_DE.language";
 
-    String DE_LANGUAGE_KEY = "de_DE";
-
-    String EN_LANGUAGE_FILE = "en_EN";
+    String EN_LANGUAGE_FILE = "en_EN.language";
 
     String COMMAND_ONLY_FOR_PLAYERS = "This command is only for players!";
 
