@@ -89,6 +89,31 @@ public class LanguageAPI {
     }
 
     /**
+     * Sendet einem Spieler direkt das Ergebnis der {@link #getTranslation(UUID, String) getTranslation} Methode
+     * und haengt die gewuenschten String hinten dran.
+     * @param playerUUID Die UUID des Spielers, der die Nachricht bekommen soll
+     * @param messageKey Ein String, der einen Key in der Language-Datei repraesentiert
+     * @param moreMessages Weitere Strings, die angehaengt werden sollen. Nuetzlich wenn bestimmte Sprachunabhaenige
+     *                     Strings angehaengt werden sollen
+     * @return Wahrheitswert, ob die Nachricht gesendet werden konnte. Ist der Spieler nicht online oder exestiert nicht,
+     * wird false zurueckgegeben.
+     */
+    public boolean sendPlayerMessageById(UUID playerUUID, String messageKey, String... moreMessages){
+        Player player = Bukkit.getPlayer(playerUUID);
+        StringBuilder builder = new StringBuilder();
+        for (String s:
+             moreMessages) {
+            builder.append(s);
+        }
+        if (player != null){
+            player.sendMessage("[" + parent.getName() + "] " + this.getTranslation(playerUUID, messageKey) + builder.toString());
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Wird verwendet, um weitere unterstuetzte Sprachen hinzuzufuegen. Das File Objekt muss eine .language Datei sein.
      * @param languageFile die Language-Datei, in der die Sprache definiert ist
      * @throws InvalidLanguageFileException

@@ -2,3 +2,4 @@ de_de :: German
 COMMAND.CHANGE_LANGUAGE :: Du hast deine Sprache erfolgreich gewechselt.
 COMMAND.LANGUAGE_NOT_FOUND :: Die angegebene Sprache wurde nicht gefunden.
 COMMAND.LANGUAGE_INFO :: Aktuelle Sprache :
+COMMAND.LANGUAGE_AUTO_CHANGE_INFO :: Benutze /autoLanguageCommand [true ODER false] um das automatische wechseln der Sprache zu aktivieren oder zu deaktivieren.

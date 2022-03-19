@@ -12,4 +12,6 @@ public interface MessageKeys {
 
     String LANGUAGE_INFO = "COMMAND.LANGUAGE_INFO";
 
+    String LANGUAGE_AUTO_CHANGE_INFO = "COMMAND.LANGUAGE_AUTO_CHANGE_INFO";
+
 }

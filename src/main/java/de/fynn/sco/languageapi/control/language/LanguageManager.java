@@ -69,7 +69,9 @@ public class LanguageManager {
             public void onPacketReceiving(PacketEvent e) {
                 if (!(e.getPacket().getType() == PacketType.Play.Client.SETTINGS)) return;
                 String language = e.getPacket().getStrings().readSafely(0).toLowerCase(Locale.ROOT);
-                setLanguage(e.getPlayer().getUniqueId(), language);
+                if (playerAutoChangeLanguage.get(e.getPlayer().getUniqueId())){
+                    setLanguage(e.getPlayer().getUniqueId(), language);
+                }
             }
 
             public void onPacketSending(PacketEvent e) {
@@ -83,14 +85,17 @@ public class LanguageManager {
 
     /**
      * Hiermit wird ein neuer Spieler im System registriert.
-     * @param uuid Der zu registrierende Spieler
+     * @param player Der zu registrierende Spieler
      */
     public void registerPlayer(Player player){
-        if (this.databaseConnector.alreadyExists(player.getUniqueId())){
-            this.playerLanguageHashMap.put(player.getUniqueId(), this.databaseConnector.loadPlayer(player.getUniqueId()));
+        UUID uuid = player.getUniqueId();
+        if (this.databaseConnector.alreadyExists(uuid)){
+            this.playerLanguageHashMap.put(uuid, this.databaseConnector.loadPlayer(uuid));
+            this.playerAutoChangeLanguage.put(uuid, this.databaseConnector.hasAutoUpdate(uuid));
         } else {
-            this.playerLanguageHashMap.put(player.getUniqueId(), player.getLocale());
-            this.databaseConnector.insertPlayer(player.getUniqueId(), player.getLocale());
+            this.playerLanguageHashMap.put(uuid, player.getLocale());
+            this.playerAutoChangeLanguage.put(uuid, true);
+            this.databaseConnector.insertPlayer(uuid, player.getLocale());
         }
     }
 
@@ -191,6 +196,15 @@ public class LanguageManager {
      */
     public String getPlayerLanguageName(UUID uuid){
         return mapLanguageCode(playerLanguageHashMap.get(uuid));
+    }
+
+    /**
+     * Legt fest, ob fuer einen Spieler die Sprache automatisch erkannt werden soll.
+     * @param uuid Die UUID des Spielers
+     * @param value Wahrheitswert, ob die Erkennung der Sprache automatisch ausgefuehrt werden soll
+     */
+    public void setPlayerAutoUpdateLanguage(UUID uuid, boolean value){
+        this.playerAutoChangeLanguage.replace(uuid, value);
     }
 
     /**

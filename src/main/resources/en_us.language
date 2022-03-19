@@ -2,3 +2,4 @@ en_us :: English (United States)
 COMMAND.CHANGE_LANGUAGE :: You have successfully changed your language.
 COMMAND.LANGUAGE_NOT_FOUND :: The specified language was not found.
 COMMAND.LANGUAGE_INFO :: Current language :
+COMMAND.LANGUAGE_AUTO_CHANGE_INFO :: Use /autoLanguageCommand [true OR false] to enable or disable automatic language switching.

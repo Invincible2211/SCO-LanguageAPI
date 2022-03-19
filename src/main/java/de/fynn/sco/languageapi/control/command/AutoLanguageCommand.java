@@ -20,7 +20,7 @@ import java.util.List;
  * @author Freddyblitz
  * @version 1.0
  */
-public class LanguageCommand implements CommandExecutor {
+public class AutoLanguageCommand implements CommandExecutor {
 
     /*----------------------------------------------ATTRIBUTE---------------------------------------------------------*/
 
@@ -30,37 +30,18 @@ public class LanguageCommand implements CommandExecutor {
 
     /*----------------------------------------------METHODEN----------------------------------------------------------*/
 
-    /**
-     * Der command kann von Spielern verwendet werden, um ihre bevorzugt Sprache festzulegen
-     * @param sender Der Spieler, der den Command ausgefuehrt hat (kann auch die Konsole sein, diese wird aber abgewiesen)
-     * @param command Der language Command selbst
-     * @param label Das label des Commands, das benutzt wurde, um diesen aufzurufen
-     * @param args Alle weiteren Argumente, die dem Command uebergeben wurden
-     * @return Wahrheitswert, ob der Command erfolgreiche ausgefuehrt werden konnte
-     */
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if(sender instanceof Player){
             Player player = (Player) sender;
-            if(args.length!=0){
-                StringBuilder builder = new StringBuilder();
-                for (int i = 0; i < args.length; i++) {
-                    builder.append(args[i]);
-                    if (i < args.length-1){
-                        builder.append(" ");
-                    }
-                }
-                String language = builder.toString();
-                if(languageManager.containsLanguage(language)){
-                    languageManager.setLanguage(player.getUniqueId(),language);
-                    languageAPI.sendPlayerMessageById(player.getUniqueId(), MessageKeys.COMMAND_CHANGE_LANGUAGE);
-                }else {
-                    languageAPI.sendPlayerMessageById(player.getUniqueId(),MessageKeys.COMMAND_LANGUAGE_NOT_FOUND);
+            if(args.length == 1){
+                if (args[0].equals("true") || args[0].equals("false")){
+                    languageManager.setPlayerAutoUpdateLanguage(player.getUniqueId(), Boolean.parseBoolean(args[0]));
+                } else {
+                    languageAPI.sendPlayerMessageById(player.getUniqueId(), MessageKeys.LANGUAGE_AUTO_CHANGE_INFO);
                 }
             }else {
-                languageAPI.sendPlayerMessageById(player.getUniqueId(), MessageKeys.LANGUAGE_INFO,
-                        languageManager.getPlayerLanguageName(player.getUniqueId()));
-                return false;
+                languageAPI.sendPlayerMessageById(player.getUniqueId(), MessageKeys.LANGUAGE_AUTO_CHANGE_INFO);
             }
         }else {
             sender.sendMessage(Strings.COMMAND_ONLY_FOR_PLAYERS);
@@ -70,7 +51,7 @@ public class LanguageCommand implements CommandExecutor {
 
     /*-----------------------------------------GETTER AND SETTER------------------------------------------------------*/
 
-    public LanguageCommandTabComplete getTabComplete(){
+    public AutoLanguageCommand.LanguageCommandTabComplete getTabComplete(){
         return new LanguageCommandTabComplete();
     }
 
@@ -79,11 +60,10 @@ public class LanguageCommand implements CommandExecutor {
     private class LanguageCommandTabComplete implements TabCompleter {
 
         /**
-         * Hiermit koennen Spieler durch das drucken von Tab mit dem language Befehl die Sprachen
-         * automatisch vervollstaendigen lassen.
-         * @param commandSender Der Spieler oder eine Konsole, die das Argument des langugae
+         * Hiermit koennen Spieler durch das drucken von Tab sich den autoLanguage Befehl vervollstaendigen lassen.
+         * @param commandSender Der Spieler oder eine Konsole, die das Argument des autoLangugae
          *                      Befehls verfollstaendigen mochete
-         * @param command Der betroffende Befehl, hier immer der language Befehl
+         * @param command Der betroffende Befehl, hier immer der autoLanguage Befehl
          * @param label Das Label, welches fuer den Befehlsaufruf verwendet wurde
          * @param args Die bisher eingegebenen Argumente fuer den Befehl
          * @return Eine alphabetisch sortierte Liste fuer moegliche Argument-Werte
@@ -91,12 +71,10 @@ public class LanguageCommand implements CommandExecutor {
         @Override
         public List<String> onTabComplete(CommandSender commandSender, Command command, String label, String[] args) {
             List<String> completions = new ArrayList<>();
-            List<String> mappedLanguages = new ArrayList<>();
-            for (String languageCode:
-                 languageManager.getAvailableLanguage()) {
-                mappedLanguages.add(languageManager.mapLanguageCode(languageCode));
-            }
-            StringUtil.copyPartialMatches(args[0], mappedLanguages, completions);
+            List<String> availableStrings = new ArrayList<>();
+            availableStrings.add("true");
+            availableStrings.add("false");
+            StringUtil.copyPartialMatches(args[0], availableStrings, completions);
             Collections.sort(completions);
             return completions;
         }

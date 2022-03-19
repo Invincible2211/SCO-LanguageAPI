@@ -4,9 +4,14 @@ main: de.fynn.sco.languageapi.LanguageAPIPlugin
 api-version: 1.16
 prefix: LanguageAPI
 load: STARTUP
+depend:
+  - ProtocolLib
 authors: [ Fynn ]
 commands:
   language:
     aliases:
       - sprache
       - lang
+  autoLanguage:
+    aliases:
+      - autolang

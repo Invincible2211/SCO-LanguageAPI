@@ -1,6 +1,7 @@
 package de.fynn.sco.languageapi;
 
 import de.fynn.sco.languageapi.control.api.LanguageAPI;
+import de.fynn.sco.languageapi.control.command.AutoLanguageCommand;
 import de.fynn.sco.languageapi.control.command.LanguageCommand;
 import de.fynn.sco.languageapi.control.file.ConfigurationLoader;
 import de.fynn.sco.languageapi.control.listener.JoinListener;
@@ -47,7 +48,9 @@ public final class LanguageAPIPlugin extends JavaPlugin {
         LanguageCommand languageCommand = new LanguageCommand();
         this.getCommand("language").setExecutor(languageCommand);
         this.getCommand("language").setTabCompleter(languageCommand.getTabComplete());
-
+        AutoLanguageCommand autoLanguageCommand = new AutoLanguageCommand();
+        this.getCommand("autoLanguage").setExecutor(autoLanguageCommand);
+        this.getCommand("autoLanguage").setTabCompleter(autoLanguageCommand.getTabComplete());
     }
 
     /**

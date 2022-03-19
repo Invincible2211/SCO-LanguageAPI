@@ -37,8 +37,10 @@ public class DatabaseConnector {
     private final PreparedStatement createTable;
     private final PreparedStatement insertPlayer;
     private final PreparedStatement updatePlayer;
+    private final PreparedStatement updatePlayerAutoLanguage;
     private final PreparedStatement alreadyExists;
     private final PreparedStatement loadPlayer;
+    private final PreparedStatement hasAutoUpdate;
     private final PreparedStatement getRegisteredPlayers;
 
     /*--------------------------------------------KONSTRUKTOREN-------------------------------------------------------*/
@@ -58,13 +60,15 @@ public class DatabaseConnector {
         }
         createSchema = connection.prepareStatement("CREATE SCHEMA IF NOT EXISTS " + databaseData.getSchema() + ";");
         createTable = connection.prepareStatement("CREATE TABLE IF NOT EXISTS " + databaseData.getSchema()
-                + ".language (uuid VARCHAR(150) NOT NULL, language VARCHAR(150) NOT NULL ,PRIMARY KEY (uuid));");
+                + ".language (uuid VARCHAR(150) NOT NULL, language VARCHAR(150) NOT NULL , autoLanguage TINYINT, PRIMARY KEY (uuid));");
         createSchema.execute();
         createTable.execute();
-        insertPlayer = connection.prepareStatement("INSERT INTO " + databaseData.getSchema() + ".language (uuid,language) VALUES (?,?);");
+        insertPlayer = connection.prepareStatement("INSERT INTO " + databaseData.getSchema() + ".language (uuid,language,autoLanguage) VALUES (?,?,true);");
         updatePlayer = connection.prepareStatement("UPDATE " + databaseData.getSchema() + ".language SET language = ? WHERE uuid = ?;");
+        updatePlayerAutoLanguage = connection.prepareStatement("UPDATE " +databaseData.getSchema() + ".language SET autoDetect = ? WHERE uuid = ?;");
         alreadyExists = connection.prepareStatement("SELECT * FROM " + databaseData.getSchema() + ".language WHERE uuid = ?;");
         loadPlayer = connection.prepareStatement("SELECT language FROM " + databaseData.getSchema() + ".language WHERE uuid = ?;");
+        hasAutoUpdate = connection.prepareStatement("SELECT autoLanguage FROM " + databaseData.getSchema() + ".language WHERE uuid = ?;");
         getRegisteredPlayers = connection.prepareStatement("SELECT uuid FROM " + databaseData.getSchema() + ".language");
     }
 
@@ -88,6 +92,7 @@ public class DatabaseConnector {
         try {
             insertPlayer.setString(1, uuid.toString());
             insertPlayer.setString(2, language);
+
             insertPlayer.executeUpdate();
         } catch (SQLException exception) {
             exception.printStackTrace();
@@ -105,6 +110,21 @@ public class DatabaseConnector {
             updatePlayer.setString(1, newLangauge);
             updatePlayer.executeUpdate();
         } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    /**
+     * Hiermit kann geaendert werden, ob sich die Sprache eines Spielers automatisch umstellt.
+     * @param uuid Die UUID des Spielers
+     * @param value Wahrheitswert, ob sich die Sprache automatisch aendern soll
+     */
+    public void updatePlayerAutoDetection(UUID uuid, boolean value){
+        try {
+            updatePlayerAutoLanguage.setString(2, uuid.toString());
+            updatePlayerAutoLanguage.setBoolean(1, value);
+            updatePlayerAutoLanguage.executeUpdate();
+        } catch (SQLException exception){
             exception.printStackTrace();
         }
     }
@@ -140,6 +160,23 @@ public class DatabaseConnector {
             exception.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * Gibt an, ob ein Spieler das automatische Aktualisieren seiner Sprache aktiv hat oder nicht.
+     * @param uuid Die UUID des Spielers
+     * @return Wahrheitswert, ob der Spieler das automatische Aktualisieren aktiv hat
+     */
+    public boolean hasAutoUpdate(UUID uuid){
+        try {
+            hasAutoUpdate.setString(1, uuid.toString());
+            ResultSet result = hasAutoUpdate.executeQuery();
+            result.next();
+            return result.getBoolean(1);
+        } catch (SQLException exception) {
+            exception.printStackTrace();
+        }
+        return true;
     }
 
     /**
