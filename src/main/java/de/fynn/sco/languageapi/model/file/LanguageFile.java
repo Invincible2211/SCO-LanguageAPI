@@ -1,6 +1,7 @@
 package de.fynn.sco.languageapi.model.file;
 
 import de.fynn.sco.languageapi.model.exception.InvalidLanguageFileException;
+import de.fynn.sco.languageapi.model.interfaces.Strings;
 
 import java.io.*;
 import java.util.HashMap;
@@ -62,10 +63,10 @@ public class LanguageFile {
         try {
             String line = reader.readLine();
             if (line == null) throw new InvalidLanguageFileException();
-            tempIdentifier = line.split(" :: ")[0];
-            tempName = line.split(" :: ")[1];
+            tempIdentifier = line.split(Strings.SEPERATOR)[0];
+            tempName = line.split(Strings.SEPERATOR)[1];
             while ( (line = reader.readLine()) != null ){
-                String[] valuesFromString = line.split(" :: ");
+                String[] valuesFromString = line.split(Strings.SEPERATOR);
                 if (valuesFromString[0] == null || valuesFromString[1] == null) throw new InvalidLanguageFileException();
                 this.translations.put(valuesFromString[0], valuesFromString[1]);
             }

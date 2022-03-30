@@ -20,4 +20,6 @@ public interface Strings {
 
     String DATABASE_CONNECTION_FAILED = "No connection to the database could be established. Check your settings in Config.yml. The plugin will be disabled";
 
+    String SEPERATOR = " :: ";
+
 }
