@@ -161,6 +161,14 @@ public class LanguageManager {
         if (languageFiles.get(plugin).containsKey(playerLanguageHashMap.get(uuid))){
             return this.languageFiles.get(plugin).get(playerLanguageHashMap.get(uuid)).getTranslation(messageKey);
         } else {
+            for (String currentLanguage:
+                 languageFiles.get(plugin).keySet()) {
+                String localeTop = currentLanguage.split("_")[0];
+                if (playerLanguageHashMap.get(uuid).split("_")[0].equals(localeTop)){
+                    return this.languageFiles.get(plugin).get(currentLanguage).getTranslation(messageKey);
+                }
+            }
+
             return this.languageFiles.get(plugin).get(defaultLanguage).getTranslation(messageKey);
         }
     }
@@ -205,6 +213,7 @@ public class LanguageManager {
      */
     public void setPlayerAutoUpdateLanguage(UUID uuid, boolean value){
         this.playerAutoChangeLanguage.replace(uuid, value);
+        databaseConnector.updatePlayerAutoDetection(uuid, value);
     }
 
     /**
@@ -224,6 +233,7 @@ public class LanguageManager {
         for (UUID uuid:
                 databaseConnector.getRegisteredPlayers()) {
             this.playerLanguageHashMap.put(uuid, databaseConnector.loadPlayer(uuid));
+            this.playerAutoChangeLanguage.put(uuid, databaseConnector.hasAutoUpdate(uuid));
         }
     }
 
