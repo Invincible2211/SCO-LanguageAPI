@@ -65,7 +65,7 @@ public class DatabaseConnector {
         createTable.execute();
         insertPlayer = connection.prepareStatement("INSERT INTO " + databaseData.getSchema() + ".language (uuid,language,autoLanguage) VALUES (?,?,true);");
         updatePlayer = connection.prepareStatement("UPDATE " + databaseData.getSchema() + ".language SET language = ? WHERE uuid = ?;");
-        updatePlayerAutoLanguage = connection.prepareStatement("UPDATE " +databaseData.getSchema() + ".language SET autoDetect = ? WHERE uuid = ?;");
+        updatePlayerAutoLanguage = connection.prepareStatement("UPDATE " +databaseData.getSchema() + ".language SET autoLanguage = ? WHERE uuid = ?;");
         alreadyExists = connection.prepareStatement("SELECT * FROM " + databaseData.getSchema() + ".language WHERE uuid = ?;");
         loadPlayer = connection.prepareStatement("SELECT language FROM " + databaseData.getSchema() + ".language WHERE uuid = ?;");
         hasAutoUpdate = connection.prepareStatement("SELECT autoLanguage FROM " + databaseData.getSchema() + ".language WHERE uuid = ?;");
